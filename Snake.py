@@ -5,6 +5,7 @@ class SNAKE:
         def __init__(self):
                 self.body = [Vector2(5, 10), Vector2(6,10), Vector2(7,10)]
                 self.direction = Vector2(1,0)
+                self.new_block = False
 
         def draw_snake(self):
                 for block in self.body:
@@ -14,9 +15,25 @@ class SNAKE:
                         
                         pygame.draw.rect(screen, (183,111,122), block_rect)
         def move_snake(self):
-                body_copy = self.body[:-1] #copio solo las primeras celdas meno la ultima
-                body_copy.insert(0,body_copy[0] + self.direction) #inserto una nueva celda al principio
-                self.body = body_copy[:] #La asigno com la original
+
+                if self.new_block == True:
+                
+                        body_copy = self.body[:] #copio solo las primeras celdas meno la ultima
+                        body_copy.insert(0,body_copy[0] + self.direction) #inserto una nueva celda al principio
+                        self.body = body_copy[:] #La asigno com la original
+                        self.new_block = False #Cuando impacta volvemos a false
+
+                else:
+                        body_copy = self.body[:-1]
+                
+                        body_copy.insert(0,body_copy[0] + self.direction) #inserto una nueva celda al principio
+                        self.body = body_copy[:] #La asigno com la original
+        
+        def add_block(self):
+                self.new_block = True
+        
+        
+
 
 class FRUIT:
         def __init__(self):
@@ -28,6 +45,8 @@ class FRUIT:
                 self.x = random.randint(0,cell_number -1)
                 self.y = random.randint(0,cell_number -1)
                 self.pos = Vector2(self.x, self.y)
+        
+
 
 class MAIN:
         def __init__(self):
@@ -44,8 +63,9 @@ class MAIN:
         
         def check_collision(self):
                 if self.fruit.pos == self.snake.body[0]:#coincide la cabeza con la posicion de la fruta
-                        self.fruit.randomize()
-                        print('snack')
+                        self.fruit.randomize() #reposicionamiento de la fruta
+                        self.snake.add_block()
+                        
 
 pygame.init()
 cell_size= 40
